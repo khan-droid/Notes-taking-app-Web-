@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes taking app</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital@1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Merienda&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Philosopher&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+        .whole{
+            margin: auto 5%;
+            background-color: rgb(240, 238, 233);
+            border-radius: 25px;
+        }
+        #notes{
+            display: grid;
+            grid-template-columns: auto auto auto;
+            padding: 10px;
+        }
+        #lst{
+            background-color: rgba(167, 219, 228, 0.911);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 2%;
+            font-size: 20px;
+            text-align: center;
+            margin: 1.5%;
+            border-radius: 10px;
+            box-shadow: 7px 7px grey;
+        }
+        .head{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #add_button{
+            background-color: rgb(78, 235, 91);
+            width: 15%;
+            height: 40px;
+            border-radius: 25px;
+            font-family: 'Poiret One', cursive;
+            font-weight:bolder;
+            margin-top: 5px;
+        }
+        #clear_button{
+            background-color: rgb(235, 225, 78);
+            width: 15%;
+            height: 40px;
+            border-radius: 25px;
+            font-family: 'Poiret One', cursive;
+            font-weight:bolder;
+            margin-top: 5px;
+        }
+        textarea{
+            width: 100%;
+            font-size: large;
+            border-radius: 25px;
+            font-family: 'Philosopher', sans-serif;
+        }
+        .del_button{
+            background-color: rgb(250, 43, 85);
+            border-radius: 25px;
+            font-family: 'Poiret One', cursive;
+            font-weight: bolder;
+        }
+        h2{
+            font-family: 'Merienda', cursive;
+            font-weight: bolder;
+        }
+        h5{
+            font-family: 'Bangers', cursive;
+        }
+        p{
+            font-family: 'Philosopher', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="whole">
+        <div class="head">
+            <h2>Enter your notes here</h2>
+            <div>
+                <textarea id="note" cols="60" rows="10"></textarea>
+            </div>
+            <br>
+                <input id="add_button" type="button" value="Add" onclick="addfunc();">
+                <input type="button" id="clear_button" value="Reset" onclick="reset();">
+        </div>
+        <br>
+        <div id="notes"></div>
+    </div>
+    <script>
+        showNotes();
+        function addfunc(){
+            var txt = document.getElementById("note").value; //for getting the notes
+            //for time
+            var d = new Date();
+            var da = d.getDate();
+            var mo = d.getMonth();
+            var ye = d.getFullYear();
+            var hr = d.getHours();
+            var min = d.getMinutes();
+            var timing = `${hr}:${min} | ${da}-${mo}-${ye}`;
+            var notes = localStorage.getItem("notes");
+            if(notes == null){
+                notesObj = [];
+            }
+            else{
+                notesObj = JSON.parse(notes);
+            }
+            notesObj.push(txt);
+            localStorage.setItem("notes",JSON.stringify(notesObj));
+            console.log(notesObj);
+            showNotes();
+        }
+        function showNotes(){
+            var notes = localStorage.getItem("notes");
+            if(notes == null){
+                notesObj = [];
+            }
+            else{
+                notesObj = JSON.parse(notes);
+            }
+            let html = "";
+            notesObj.forEach(function(element, index){
+                html += `<div id="lst">
+                         <h5>Note ${index+1}</h5>
+                         <p>${element}</p>
+                         <input type="button" value="Delete" class= "del_button" id="${index}" onclick="deleteNote(this.id)">
+                         </div>`
+            });
+            let notesElm = document.getElementById('notes');
+            if(notesObj.length != 0){
+                notesElm.innerHTML = html;
+            }
+            else{
+                notesElm.innerHTML = `No notes added`;
+            }
+        }
+        function deleteNote(index){
+            var notes = localStorage.getItem("notes");
+            if(notes == null){
+                notesObj = [];
+            }
+            else{
+                notesObj = JSON.parse(notes);
+            }
+            notesObj.splice(index,1);
+            localStorage.setItem("notes",JSON.stringify(notesObj));
+            showNotes();
+        }
+        function reset() {
+        var ta = document.getElementById('note');
+        if (!ta.value || ta.value != ta.defaultValue) {
+        ta.value = ta.defaultValue;
+        }
+}
+    </script>
+</body>
+</html>
